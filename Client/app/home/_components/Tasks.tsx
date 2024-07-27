@@ -1,6 +1,7 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TaskModal } from "./TaskModal";
+import { TaskNewModalByStatus } from "./TaskNewByStatus";
 import {
   Search,
   Functions,
@@ -12,16 +13,29 @@ import { useModal } from "@/context/modalContext";
 import { useTasks } from "@/context/taskContext";
 import TaskCard from "./Taskcard";
 const Tasks: React.FC<any> = ({ userId }) => {
-  
-  const { groupedTasks, tasks, refreshTasks } = useTasks();
+  const { groupedTasks, refreshTasks } = useTasks();
   useEffect(() => {
     refreshTasks(userId);
   }, []);
-  console.log(groupedTasks , "grup")
-  const { handleChange  , Open} = useModal();
+  const { handleChange, Open } = useModal();
+
+  const [ModalOpen, setModalOpen] = useState(false);
+  const [ModalStatus, setModalStatus] = useState("");
+
+  const Remove = () => {
+    setModalOpen(false);
+  };
+
   return (
     <>
-    {Open && <TaskModal userId={userId}/>}
+      {Open && <TaskModal userId={userId} />}
+      {ModalOpen && (
+        <TaskNewModalByStatus
+          userId={userId}
+          status={ModalStatus}
+          Remove={Remove}
+        />
+      )}
       <div className="flex flex-col gap-6 w-full">
         <div className="flex justify-between">
           <div className="p-[8px] flex gap-2 rounded-[6px] justify-between text-[#797979] items-center  border border-[#E9E9E9] bg-white font-Poppins">
@@ -66,12 +80,18 @@ const Tasks: React.FC<any> = ({ userId }) => {
               groupedTasks["To-Do"].map((data) => {
                 return (
                   <>
-                    <TaskCard Task={data} />
+                    <TaskCard Task={data} userId={userId} />
                   </>
                 );
               })}
             <div>
-              <button className="p-[8px] w-full rounded-[8px] bg-custom-add-btn text-[#E3E1E1] flex items-center justify-between">
+              <button
+                onClick={() => {
+                  setModalStatus("To-Do");
+                  setModalOpen(true);
+                }}
+                className="p-[8px] w-full rounded-[8px] bg-custom-add-btn text-[#E3E1E1] flex items-center justify-between"
+              >
                 <div>Add New</div>
                 <div>
                   <Positive />
@@ -96,12 +116,18 @@ const Tasks: React.FC<any> = ({ userId }) => {
               groupedTasks["In Progress"].map((data) => {
                 return (
                   <>
-                    <TaskCard Task={data} />
+                    <TaskCard Task={data} userId={userId} />
                   </>
                 );
               })}
             <div>
-              <button className="p-[8px] w-full rounded-[8px] bg-custom-add-btn text-[#E3E1E1] flex items-center justify-between">
+              <button
+                onClick={() => {
+                  setModalStatus("In Progress");
+                  setModalOpen(true);
+                }}
+                className="p-[8px] w-full rounded-[8px] bg-custom-add-btn text-[#E3E1E1] flex items-center justify-between"
+              >
                 <div>Add New</div>
                 <div>
                   <Positive />
@@ -125,12 +151,18 @@ const Tasks: React.FC<any> = ({ userId }) => {
               groupedTasks["Under Review"].map((data) => {
                 return (
                   <>
-                    <TaskCard Task={data} />
+                    <TaskCard Task={data} userId={userId} />
                   </>
                 );
               })}
             <div>
-              <button className="p-[8px] w-full rounded-[8px] bg-custom-add-btn text-[#E3E1E1] flex items-center justify-between">
+              <button
+                onClick={() => {
+                  setModalStatus("Under Review");
+                  setModalOpen(true);
+                }}
+                className="p-[8px] w-full rounded-[8px] bg-custom-add-btn text-[#E3E1E1] flex items-center justify-between"
+              >
                 <div>Add New</div>
                 <div>
                   <Positive />
@@ -153,12 +185,18 @@ const Tasks: React.FC<any> = ({ userId }) => {
               groupedTasks["Completed"].map((data) => {
                 return (
                   <>
-                    <TaskCard Task={data} />
+                    <TaskCard Task={data} userId={userId} />
                   </>
                 );
               })}
             <div>
-              <button className="p-[8px] w-full rounded-[8px] bg-custom-add-btn text-[#E3E1E1] flex items-center justify-between">
+              <button
+                onClick={() => {
+                  setModalStatus("Completed");
+                  setModalOpen(true);
+                }}
+                className="p-[8px] w-full rounded-[8px] bg-custom-add-btn text-[#E3E1E1] flex items-center justify-between"
+              >
                 <div>Add New</div>
                 <div>
                   <Positive />

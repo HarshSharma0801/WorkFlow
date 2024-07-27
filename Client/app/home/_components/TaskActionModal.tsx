@@ -1,9 +1,8 @@
 "use client";
 import { useState } from "react";
 import { Status, Description, Priority, Deadline } from "@/public/icons/icons";
-import { useModal } from "@/context/modalContext";
 import { useTasks } from "@/context/taskContext";
-import { createTask } from "@/services/task";
+import { updateTaskById, deleteTaskById } from "@/services/task";
 import {
   Select,
   SelectContent,
@@ -25,21 +24,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export const TaskModal: React.FC<any> = ({ userId }) => {
-  const { Open, handleChange } = useModal();
-  const [date, setDate] = useState<Date>();
-  const [ModalTitle, setTitle] = useState<string>();
-  const [ModalDescription, setDescription] = useState<string>("");
-  const [ModalStatus, setStatus] = useState<string>("");
-  const [ModalPriority, setPriority] = useState<string>("");
+export const TaskActionModal: React.FC<any> = ({ userId, Task, Remove }) => {
+  const [date, setDate] = useState<Date | undefined>(Task.deadline);
+  const [ModalTitle, setTitle] = useState<string>(Task.title);
+  const [ModalDescription, setDescription] = useState<string>(Task.description);
+  const [ModalStatus, setStatus] = useState<string>(Task.status);
+  const [ModalPriority, setPriority] = useState<string>(Task.priority);
 
   const { refreshTasks } = useTasks();
-  const RemovePopup = () => {
-    refreshTasks(userId);
-    handleChange();
-  };
 
-  const handleClick = async () => {
+  const handleUpdate = async () => {
     const data = {
       title: ModalTitle,
       description: ModalDescription,
@@ -49,9 +43,18 @@ export const TaskModal: React.FC<any> = ({ userId }) => {
       userId: userId,
     };
 
-    const res = await createTask(data);
+    const res = await updateTaskById(Task._id, data);
     if (res.valid) {
-      RemovePopup();
+      refreshTasks(userId);
+      Remove();
+    }
+  };
+
+  const handleDelete = async () => {
+    const res = await deleteTaskById(Task._id);
+    if (res.valid) {
+      refreshTasks(userId);
+      Remove();
     }
   };
 
@@ -65,9 +68,7 @@ export const TaskModal: React.FC<any> = ({ userId }) => {
         >
           <div className="absolute top-3 left-3 cursor-pointer">
             <svg
-              onClick={() => {
-                handleChange();
-              }}
+              onClick={Remove}
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -211,12 +212,18 @@ export const TaskModal: React.FC<any> = ({ userId }) => {
                 </div>
               </div>
 
-              <div className="flex justify-center pt-5">
+              <div className="flex gap-4 justify-center pt-5">
                 <button
-                  onClick={handleClick}
+                  onClick={handleUpdate}
                   className="w-[40%] flex bg-custom-btn-gradient items-center gap-2 justify-center  p-[8px] transition duration-150 ease-in-out  rounded-md shadow-sm text-[16px] font-[500] text-white focus:shadow-lg focus:outline-none "
                 >
-                  Create
+                  Update
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="w-[40%] flex bg-red-500 items-center gap-2 justify-center  p-[8px] transition duration-150 ease-in-out  rounded-md shadow-sm text-[16px] font-[500] text-white focus:shadow-lg focus:outline-none "
+                >
+                  Delete
                 </button>
               </div>
             </div>

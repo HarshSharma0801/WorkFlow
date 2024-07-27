@@ -70,6 +70,28 @@ export const updateTaskById = async (
   }
 };
 
+
+export const updateTaskByStatusId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const {  status } = req.body;
+    const task: ITask | null = await Task.findByIdAndUpdate(
+      req.params.id,
+      { status:status },
+      { new: true }
+    );
+    if (!task) {
+      res.status(404).json({ message: "Task not found" });
+    } else {
+      res.status(200).json({ task, valid: true });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error updating task", error });
+  }
+};
+
 export const deleteTaskById = async (
   req: Request,
   res: Response

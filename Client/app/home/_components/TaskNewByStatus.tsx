@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { Status, Description, Priority, Deadline } from "@/public/icons/icons";
-import { useModal } from "@/context/modalContext";
 import { useTasks } from "@/context/taskContext";
 import { createTask } from "@/services/task";
 import {
@@ -25,18 +24,21 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export const TaskModal: React.FC<any> = ({ userId }) => {
-  const { Open, handleChange } = useModal();
+export const TaskNewModalByStatus: React.FC<any> = ({
+  userId,
+  status,
+  Remove,
+}) => {
   const [date, setDate] = useState<Date>();
   const [ModalTitle, setTitle] = useState<string>();
   const [ModalDescription, setDescription] = useState<string>("");
-  const [ModalStatus, setStatus] = useState<string>("");
+  const [ModalStatus, setStatus] = useState<string>(status);
   const [ModalPriority, setPriority] = useState<string>("");
 
   const { refreshTasks } = useTasks();
   const RemovePopup = () => {
     refreshTasks(userId);
-    handleChange();
+    Remove();
   };
 
   const handleClick = async () => {
@@ -65,9 +67,7 @@ export const TaskModal: React.FC<any> = ({ userId }) => {
         >
           <div className="absolute top-3 left-3 cursor-pointer">
             <svg
-              onClick={() => {
-                handleChange();
-              }}
+              onClick={Remove}
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -104,24 +104,19 @@ export const TaskModal: React.FC<any> = ({ userId }) => {
                 </div>
 
                 <div>
-                  <Select
-                    onValueChange={(e) => {
-                      setStatus(e);
-                    }}
-                    value={ModalStatus}
-                  >
+                  <Select value={ModalStatus}>
                     <SelectTrigger className="w-[180px] outline-none focus:ring-0">
-                      <SelectValue placeholder="Select a value" />
+                      <SelectValue
+                        defaultValue={ModalStatus}
+                        placeholder="Select a value"
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Value</SelectLabel>
-                        <SelectItem value="To-Do">To-Do</SelectItem>
-                        <SelectItem value="In Progress">In Progress</SelectItem>
-                        <SelectItem value="Under Review">
-                          Under Review
+                        <SelectItem value={ModalStatus}>
+                          {ModalStatus}
                         </SelectItem>
-                        <SelectItem value="Completed">Completed</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

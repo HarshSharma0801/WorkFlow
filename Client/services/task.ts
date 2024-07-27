@@ -48,6 +48,15 @@ export const updateTaskById = async (id: string, task: Task) => {
   }
 };
 
+export const updateTaskByStatusId = async (id: string, status: string) => {
+  try {
+    const response = await apiClient.put(`/Statustasks/${id}`, status);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const deleteTaskById = async (id: string) => {
   try {
     const response = await apiClient.delete(`/tasks/${id}`);

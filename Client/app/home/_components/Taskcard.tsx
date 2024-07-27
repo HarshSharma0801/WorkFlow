@@ -1,11 +1,13 @@
+import React, { useState } from "react";
 import { Task } from "@/context/taskContext";
 import { Clock } from "@/public/icons/icons";
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
+import { TaskActionModal } from "./TaskActionModal";
 
-import React from "react";
+const TaskCard: React.FC<{ Task: Task; userId: any }> = ({ Task, userId }) => {
+  const [Open, setOpen] = useState(false);
 
-const TaskCard: React.FC<{ Task: Task }> = ({ Task }) => {
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "yyyy-MM-dd");
   };
@@ -23,9 +25,19 @@ const TaskCard: React.FC<{ Task: Task }> = ({ Task }) => {
     }
   };
 
+  const Remove = () => {
+    setOpen(false);
+  };
+
   return (
     <>
-      <div className="flex justify-center flex-col gap-3 p-4 bg-[#F9F9F9] border rounded-[10px] border-[#DEDEDE] ">
+      {Open && <TaskActionModal userId={userId} Task={Task} Remove={Remove} />}
+      <div
+        onClick={() => {
+          setOpen(true);
+        }}
+        className="flex cursor-pointer justify-center flex-col gap-3 p-4 bg-[#F9F9F9] border rounded-[10px] border-[#DEDEDE] "
+      >
         <div className="font-[500] text-[16px] leading-[19px] text-[#606060] ">
           {Task.title}
         </div>
