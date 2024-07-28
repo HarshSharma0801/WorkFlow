@@ -2,11 +2,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { updateTaskByStatusId } from "../services/task";
 import { getAllTasks } from "../services/task";
+
 export type Task = {
   _id: string;
   title: string;
   description: string;
-  status: "To-Do" | "In Progress" | "Under Review" | "Completed";
+  status: string;
   priority: string;
   deadline: Date;
   createdAt: Date;
@@ -22,7 +23,8 @@ interface TaskContextType {
   loading: boolean;
   error: string | null;
   refreshTasks: (userId: any) => void;
-  updateTaskStatus: (taskId: string, status: string) => void; // Add this function to the context
+  updateTaskStatus: (taskId: string, status: string) => void;
+  setGroupedTasks: React.Dispatch<React.SetStateAction<GroupedTasks>>;
 }
 
 const TaskContext = createContext<TaskContextType>({
@@ -37,13 +39,12 @@ const TaskContext = createContext<TaskContextType>({
   error: null,
   refreshTasks: (userId: any) => {},
   updateTaskStatus: (taskId: string, status: string) => {},
+  setGroupedTasks: () => {},
 });
 
 export const useTasks = () => useContext(TaskContext);
 
-const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [groupedTasks, setGroupedTasks] = useState<GroupedTasks>({
     "To-Do": [],
@@ -82,6 +83,7 @@ const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
   const refreshTasks = (userId: any) => {
     fetchTasks(userId);
   };
+
   const groupTasksByStatus = (tasks: Task[]): GroupedTasks => {
     if (tasks && tasks.length > 0) {
       return tasks.reduce<GroupedTasks>(
@@ -106,6 +108,7 @@ const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
       };
     }
   };
+
   useEffect(() => {
     const grouped = groupTasksByStatus(tasks);
     setGroupedTasks(grouped);
@@ -120,6 +123,7 @@ const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
         error,
         refreshTasks,
         updateTaskStatus,
+        setGroupedTasks,
       }}
     >
       {children}

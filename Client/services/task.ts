@@ -50,7 +50,9 @@ export const updateTaskById = async (id: string, task: Task) => {
 
 export const updateTaskByStatusId = async (id: string, status: string) => {
   try {
-    const response = await apiClient.put(`/Statustasks/${id}`, status);
+    const response = await apiClient.put(`/Statustasks/${id}`, {
+      status:status
+    });
     return response.data;
   } catch (error) {
     throw error;

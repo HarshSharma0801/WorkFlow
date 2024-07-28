@@ -11,9 +11,11 @@ import {
 } from "@/public/icons/icons";
 import { useModal } from "@/context/modalContext";
 import { useTasks } from "@/context/taskContext";
+import DropArea from "./DropArea";
+import { updateTaskByStatusId } from "@/services/task";
 import TaskCard from "./Taskcard";
 const Tasks: React.FC<any> = ({ userId }) => {
-  const { groupedTasks, refreshTasks } = useTasks();
+  const { groupedTasks, refreshTasks, setGroupedTasks } = useTasks();
   useEffect(() => {
     refreshTasks(userId);
   }, []);
@@ -24,6 +26,37 @@ const Tasks: React.FC<any> = ({ userId }) => {
 
   const Remove = () => {
     setModalOpen(false);
+  };
+  const [ActiveCard, setActiveCard] = useState<{
+    index: number;
+    CurrentStatus: string;
+    TaskId: string;
+  } | null>(null);
+
+  const OnDrag = async (status: string, position: number) => {
+    if (!ActiveCard) return;
+    const Tasks = groupedTasks;
+    const Task = Tasks[ActiveCard.CurrentStatus].find(
+      (data, index) => index === ActiveCard.index
+    );
+    const UpdatedTasks = Tasks[ActiveCard.CurrentStatus].filter(
+      (data, index) => index !== ActiveCard.index
+    );
+    if (Task) {
+      const TasksCopy = [...Tasks[status]];
+      TasksCopy.splice(position, 0, {
+        ...Task,
+        status: status,
+      });
+      const res = await updateTaskByStatusId(ActiveCard.TaskId, status);
+      if (res.valid) {
+        setGroupedTasks((prev) => ({
+          ...prev,
+          [status]: TasksCopy,
+          [ActiveCard.CurrentStatus]: UpdatedTasks,
+        }));
+      }
+    }
   };
 
   return (
@@ -74,16 +107,31 @@ const Tasks: React.FC<any> = ({ userId }) => {
                 <Hamburger />
               </div>
             </div>
+            <DropArea position={0} status={"To-Do"} onDrop={OnDrag} />
+            <div className="flex flex-col gap-4">
+              {groupedTasks &&
+                groupedTasks["To-Do"].length > 0 &&
+                groupedTasks["To-Do"].map((data, index) => {
+                  return (
+                    <>
+                      <TaskCard
+                        key={index}
+                        index={index}
+                        Task={data}
+                        userId={userId}
+                        setActiveCard={setActiveCard}
+                      />
+                      <DropArea
+                        key={Math.random() * index}
+                        position={index + 1}
+                        status={"To-Do"}
+                        onDrop={OnDrag}
+                      />
+                    </>
+                  );
+                })}
+            </div>
 
-            {groupedTasks &&
-              groupedTasks["To-Do"].length > 0 &&
-              groupedTasks["To-Do"].map((data) => {
-                return (
-                  <>
-                    <TaskCard Task={data} userId={userId} />
-                  </>
-                );
-              })}
             <div>
               <button
                 onClick={() => {
@@ -110,16 +158,31 @@ const Tasks: React.FC<any> = ({ userId }) => {
                 <Hamburger />
               </div>
             </div>
+            <DropArea position={0} status={"In Progress"} onDrop={OnDrag} />
+            <div className="flex flex-col gap-4">
+              {groupedTasks &&
+                groupedTasks["In Progress"].length > 0 &&
+                groupedTasks["In Progress"].map((data, index) => {
+                  return (
+                    <>
+                      <TaskCard
+                        key={index}
+                        index={index}
+                        Task={data}
+                        userId={userId}
+                        setActiveCard={setActiveCard}
+                      />
+                      <DropArea
+                        key={Math.random() * index}
+                        position={index + 1}
+                        status={"In Progress"}
+                        onDrop={OnDrag}
+                      />
+                    </>
+                  );
+                })}
+            </div>
 
-            {groupedTasks &&
-              groupedTasks["In Progress"].length > 0 &&
-              groupedTasks["In Progress"].map((data) => {
-                return (
-                  <>
-                    <TaskCard Task={data} userId={userId} />
-                  </>
-                );
-              })}
             <div>
               <button
                 onClick={() => {
@@ -146,15 +209,31 @@ const Tasks: React.FC<any> = ({ userId }) => {
                 <Hamburger />
               </div>
             </div>
-            {groupedTasks &&
-              groupedTasks["Under Review"].length > 0 &&
-              groupedTasks["Under Review"].map((data) => {
-                return (
-                  <>
-                    <TaskCard Task={data} userId={userId} />
-                  </>
-                );
-              })}
+            <DropArea position={0} status={"Under Review"} onDrop={OnDrag} />
+            <div className="flex flex-col gap-4">
+              {groupedTasks &&
+                groupedTasks["Under Review"].length > 0 &&
+                groupedTasks["Under Review"].map((data, index) => {
+                  return (
+                    <>
+                      <TaskCard
+                        key={index}
+                        index={index}
+                        Task={data}
+                        userId={userId}
+                        setActiveCard={setActiveCard}
+                      />
+                      <DropArea
+                        key={Math.random() * index}
+                        position={index + 1}
+                        status={"Under Review"}
+                        onDrop={OnDrag}
+                      />
+                    </>
+                  );
+                })}
+            </div>
+
             <div>
               <button
                 onClick={() => {
@@ -180,15 +259,31 @@ const Tasks: React.FC<any> = ({ userId }) => {
                 <Hamburger />
               </div>
             </div>
-            {groupedTasks &&
-              groupedTasks["Completed"].length > 0 &&
-              groupedTasks["Completed"].map((data) => {
-                return (
-                  <>
-                    <TaskCard Task={data} userId={userId} />
-                  </>
-                );
-              })}
+            <DropArea position={0} status={"Completed"} onDrop={OnDrag} />
+            <div className="flex flex-col gap-4">
+              {groupedTasks &&
+                groupedTasks["Completed"].length > 0 &&
+                groupedTasks["Completed"].map((data, index) => {
+                  return (
+                    <>
+                      <TaskCard
+                        key={index}
+                        index={index}
+                        Task={data}
+                        userId={userId}
+                        setActiveCard={setActiveCard}
+                      />
+                      <DropArea
+                        key={Math.random() * index}
+                        position={index + 1}
+                        status={"Completed"}
+                        onDrop={OnDrag}
+                      />
+                    </>
+                  );
+                })}
+            </div>
+
             <div>
               <button
                 onClick={() => {

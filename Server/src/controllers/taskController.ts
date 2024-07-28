@@ -77,6 +77,7 @@ export const updateTaskByStatusId = async (
 ): Promise<void> => {
   try {
     const {  status } = req.body;
+   
     const task: ITask | null = await Task.findByIdAndUpdate(
       req.params.id,
       { status:status },

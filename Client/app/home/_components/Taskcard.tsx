@@ -5,7 +5,16 @@ import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { TaskActionModal } from "./TaskActionModal";
 
-const TaskCard: React.FC<{ Task: Task; userId: any }> = ({ Task, userId }) => {
+const TaskCard: React.FC<{
+  Task: Task;
+  userId: any;
+  index: number;
+  setActiveCard: React.Dispatch<React.SetStateAction<{
+    TaskId:string
+    index:number,
+    CurrentStatus:string
+  } | null>>;
+}> = ({ Task, userId, index, setActiveCard }) => {
   const [Open, setOpen] = useState(false);
 
   const formatDate = (dateString: string) => {
@@ -29,14 +38,30 @@ const TaskCard: React.FC<{ Task: Task; userId: any }> = ({ Task, userId }) => {
     setOpen(false);
   };
 
+  const [isDragging, setIsDragging] = useState(false);
+
   return (
     <>
       {Open && <TaskActionModal userId={userId} Task={Task} Remove={Remove} />}
       <div
+        onDragStart={() => {
+          setIsDragging(true);
+          setActiveCard({
+            index:index,
+            CurrentStatus:Task.status,
+            TaskId:Task._id
+          });
+        }}
+        onDragEnd={() => {
+          setIsDragging(false);
+
+          setActiveCard(null);
+        }}
+        draggable
         onClick={() => {
           setOpen(true);
         }}
-        className="flex cursor-pointer justify-center flex-col gap-3 p-4 bg-[#F9F9F9] border rounded-[10px] border-[#DEDEDE] "
+        className={`flex cursor-pointer justify-center flex-col gap-3 p-4 bg-[#F9F9F9] border rounded-[10px] border-[#DEDEDE] ${isDragging ? 'opacity-[0.5]' : 'opacity-[1]'} `}
       >
         <div className="font-[500] text-[16px] leading-[19px] text-[#606060] ">
           {Task.title}
