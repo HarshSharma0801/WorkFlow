@@ -70,7 +70,7 @@ const Tasks: React.FC<any> = ({ userId }) => {
         />
       )}
       <div className="flex flex-col gap-6 w-full">
-        <div className="flex justify-between">
+        <div className="flex xl:flex-row flex-col gap-3 xl:justify-between">
           <div className="p-[8px] flex gap-2 rounded-[6px] justify-between text-[#797979] items-center  border border-[#E9E9E9] bg-white font-Poppins">
             <input
               placeholder="Search"
@@ -97,7 +97,7 @@ const Tasks: React.FC<any> = ({ userId }) => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-8 justify-start py-5 bg-white rounded-[12px] px-5">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-3 xl:gap-8 justify-start py-2 xl:py-5 bg-white rounded-[12px] px-5">
           <div className="flex flex-col gap-4 justify-start">
             <div className="flex justify-between items-center">
               <div className="font-[400] text-[20px] leading-[24px] text-[#555555]">

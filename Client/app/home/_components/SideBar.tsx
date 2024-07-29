@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { SideIcons, TabsIcons, Add } from "@/public/icons/icons";
 import Avatar from "@/public/avatar.jpg";
 import Image from "next/image";
@@ -7,9 +7,12 @@ const SideBar = async () => {
   const session = await auth();
   const user = session?.user;
 
+  const LogOut = async () => {
+    await signOut();
+  };
   return (
     <>
-      <div className="w-[20%] flex flex-col gap-4 p-6 border-r h-screen border-r-[#DEDEDE]">
+      <div className="w-[20%] hidden xl:flex flex-col gap-4 p-6 border-r h-screen border-r-[#DEDEDE]">
         <div className="flex justify-start gap-4 items-center">
           <div className="w-[31px] h-[31px] rounded-[50%]">
             <Image
@@ -26,11 +29,20 @@ const SideBar = async () => {
             <SideIcons />
           </div>
 
-          <div className="flex justify-center items-center">
-            <button className="p-[8px] bg-[#F4F4F4]  text-[#797979]">
-              Logout
+          <form
+            action={async () => {
+              "use server";
+
+              await signOut();
+            }}
+          >
+            <button
+              type="submit"
+              className="p-[8px] bg-[#F4F4F4]  text-[#797979]"
+            >
+              Sign Out
             </button>
-          </div>
+          </form>
         </div>
 
         <div className="flex justify-center cursor-pointer">

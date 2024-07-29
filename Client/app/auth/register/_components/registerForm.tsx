@@ -94,6 +94,9 @@ const RegisterForm = () => {
             </button>
           </div>
         </form>
+        <div className="text-center">
+          Already have an account ? <span className="cursor-pointer text-blue-500" onClick={()=>{router.push('/auth/login')}}>login</span> 
+        </div>
       </div>
     </>
   );

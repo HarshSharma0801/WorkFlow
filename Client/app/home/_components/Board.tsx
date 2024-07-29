@@ -7,12 +7,12 @@ const Board = async () => {
 
   return (
     <>
-      <div className="flex justify-start flex-col gap-6  w-[80%] p-8 bg-[#F4F4F4] ">
-        <div className="text-[48px] font-[600]">
+      <div className="flex justify-start flex-col gap-6  w-full xl:w-[80%] p-3 xl:p-8 bg-[#F4F4F4] ">
+        <div className=" text-[30px] xl:text-[48px] font-[600]">
           Good Morning, {user?.name} !
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex xl:flex-row flex-col gap-2">
           <div className="bg-white p-[16px] flex gap-4 justify-center items-center rounded-[8px]">
             <div>
               <Info1 />
@@ -51,7 +51,7 @@ const Board = async () => {
               </div>
               <div className="text-[#868686] text-[14px] leading-[16px]">
                 Sync your notes across all devices. Stay productive whether
-                you're on your phone, tablet, or computer.
+                you&apos;re on your phone, tablet, or computer.
               </div>
             </div>
           </div>

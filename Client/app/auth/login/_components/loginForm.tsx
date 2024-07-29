@@ -89,6 +89,9 @@ const LoginForm = () => {
             </button>
           </div>
         </form>
+        <div className="text-center">
+          Don&apos;t have an account ? <span className="cursor-pointer text-blue-500" onClick={()=>{router.push('/auth/register')}}>sign up</span> 
+        </div>
       </div>
     </>
   );

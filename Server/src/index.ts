@@ -26,6 +26,9 @@ mongoose.connect(MONGO_URI)
     console.error('Error connecting to MongoDB', err);
   });
 
+ app.get('/' , (req , res)=>{
+  res.send("its working")
+ }) 
 app.use(router);
 
 app.listen(PORT , ()=>{
